@@ -32,15 +32,15 @@ typedef struct {
 } msg_data_t;
 
 
-static error_stack_t local_stack;
-static int stack_ptr = 0;
-static int stack_ptr_save = 0;
-static msg_data_t msg_buf;
+static __thread error_stack_t local_stack;
+static __thread int stack_ptr = 0;
+static __thread int stack_ptr_save = 0;
+static __thread msg_data_t msg_buf;
 
 
 /* Get the string error corresponding to the numeric value of `err`. */
 char const * thread_strerror(int err) {
-  static char errbuf[MAX_ERR_STR_BUF_SIZE + 1];
+  static __thread char errbuf[MAX_ERR_STR_BUF_SIZE + 1];
 
 #if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
   if (strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE) != OK) {
