@@ -5,8 +5,11 @@
 #include <stdarg.h>
 
 
-static unsigned int const MAX_STACK_SIZE = 1024;
-static unsigned int const MAX_MSG_SIZE = 512;
+enum { 
+  MAX_STACK_SIZE = 1024,
+  MAX_USER_ERR_MSG_SIZE = 512,
+  MAX_ERR_STR_BUF_SIZE = 1024
+};
 
 
 /* Holds a single trace point in the trace stack. */
@@ -25,7 +28,7 @@ typedef struct {
 
 /* The initial error message. */
 typedef struct {
-  char buff[MAX_MSG_SIZE];
+  char buff[MAX_USER_ERR_MSG_SIZE + 1];
 } msg_data_t;
 
 
@@ -37,10 +40,16 @@ static msg_data_t msg_buf;
 
 /* Get the string error corresponding to the numeric value of `err`. */
 char const * thread_strerror(int err) {
-  int const max_errbuf_size = 1024;
-  typedef char error_buff_t[max_errbuf_size];
-  static error_buff_t errbuf;
-  return strerror_r(err, errbuf, max_errbuf_size);
+  static char errbuf[MAX_ERR_STR_BUF_SIZE + 1];
+
+#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
+  if (strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE) != OK) {
+    return NULL;
+  }
+  return errbuf;
+#else
+  return (char*)strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE);
+#endif
 }
 
 
@@ -54,7 +63,7 @@ void start_error(char const * file, char const * func, int line) {
 void set_error_msg(char const * fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  vsnprintf(msg_buf.buff, MAX_MSG_SIZE, fmt, args);
+  vsnprintf(msg_buf.buff, MAX_USER_ERR_MSG_SIZE, fmt, args);
   va_end(args);
 }
 
@@ -100,8 +109,9 @@ void restore_traceback_position(void) {
 
 /* Format the traceback and print it to stderr. */
 void log_traceback(err_t err) {
+  int i;
   fprintf(stderr, "CC Traceback:\n");
-  for (int i = stack_ptr - 1; i >= 0; --i) {
+  for (i = stack_ptr - 1; i >= 0; --i) {
     fprintf(stderr, "  File \"%s\", line %d, in %s\n", 
         local_stack.buffer[i].file,
         local_stack.buffer[i].line,
