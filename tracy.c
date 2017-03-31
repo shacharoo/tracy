@@ -8,17 +8,22 @@
 static unsigned int const MAX_STACK_SIZE = 1024;
 static unsigned int const MAX_MSG_SIZE = 512;
 
+
+/* Holds a single trace point in the trace stack. */
 typedef struct {
   char const * file;
   char const * func;
   int line;
 } stack_buff_t;
 
+
+/* The trace stack. */
 typedef struct {
   stack_buff_t buffer[MAX_STACK_SIZE];
 } error_stack_t;
 
 
+/* The initial error message. */
 typedef struct {
   char buff[MAX_MSG_SIZE];
 } msg_data_t;
