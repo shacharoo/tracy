@@ -5,26 +5,47 @@
 #include <stdarg.h>
 
 
+static unsigned int const MAX_STACK_SIZE = 1024;
+static unsigned int const MAX_MSG_SIZE = 512;
+
+typedef struct {
+  char const * file;
+  char const * func;
+  int line;
+} stack_buff_t;
+
+typedef struct {
+  stack_buff_t buffer[MAX_STACK_SIZE];
+} error_stack_t;
+
+
+typedef struct {
+  char buff[MAX_MSG_SIZE];
+} msg_data_t;
+
+
 static error_stack_t local_stack;
 static int stack_ptr = 0;
 static int stack_ptr_save = 0;
 static msg_data_t msg_buf;
 
 
-char const * thread_strerror(int errnum) {
+/* Get the string error corresponding to the numeric value of `err`. */
+char const * thread_strerror(int err) {
   int const max_errbuf_size = 1024;
   typedef char error_buff_t[max_errbuf_size];
   static error_buff_t errbuf;
-  return strerror_r(errnum, errbuf, max_errbuf_size);
+  return strerror_r(err, errbuf, max_errbuf_size);
 }
 
 
-// Start an error trace.
+/* Start an error traceback. */
 void start_error(char const * file, char const * func, int line) {
   add_error_trace(file, func, line);
 }
 
-// Set an error message.
+
+/* Save the initial error message. */
 void set_error_msg(char const * fmt, ...) {
   va_list args;
   va_start(args, fmt);
@@ -32,12 +53,21 @@ void set_error_msg(char const * fmt, ...) {
   va_end(args);
 }
 
+
+/* Return the saved error message. */
+char const * get_error_msg(void) {
+  return msg_buf.buff;
+}
+
+
+/* Clear the error traceback. */
 void clear_error(void) {
   stack_ptr = 0;
   msg_buf.buff[0] = '\0';
 }
 
-// Add a trace point to the error traceback.
+
+/* Add a trace point to the error traceback. */
 void add_error_trace(char const * file, char const * func, int line) {
   if (stack_ptr >= MAX_STACK_SIZE) {
     fprintf(stderr, "Warning: error stack overflow (no room for stack trace)\n");
@@ -50,30 +80,20 @@ void add_error_trace(char const * file, char const * func, int line) {
   ++stack_ptr;
 }
 
-// Get the error traceback in the out parameter. Returns the traceback length.
-int get_error_trace(stack_buff_t** out) {
-  *out = local_stack.buffer;
-  return stack_ptr;
-}
 
-// TBD
-char const * get_error_msg(void) {
-  return msg_buf.buff;
-}
-
+/* Save the current stack position in a temporary variable. */
 void save_traceback_position(void) {
   stack_ptr_save = stack_ptr;
 }
 
+
+/* Restore the stack position from the temprary variable. */
 void restore_traceback_position(void) {
   stack_ptr = stack_ptr_save;
 }
 
 
-
-
-#ifdef __cplusplus
-
+/* Format the traceback and print it to stderr. */
 void log_traceback(err_t err) {
   fprintf(stderr, "CC Traceback:\n");
   for (int i = stack_ptr - 1; i >= 0; --i) {
@@ -90,4 +110,17 @@ void log_traceback(err_t err) {
   }
 }
 
-#endif
+
+/* Same as `log_traceback`, but also clears the error afterwards. */
+void log_and_clear_error(err_t err) {
+  log_traceback(err);
+  clear_error();
+}
+
+
+/* Same as `log_and_clear_error`, but only if `err` != OK. */
+void log_and_clear_on_error(err_t err) {
+  if (err != OK) {
+    log_and_clear_error(err);
+  }
+}

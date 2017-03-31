@@ -5,67 +5,58 @@
 #include <errno.h>
 
 
-static unsigned int const MAX_STACK_SIZE = 1024;
-static unsigned int const MAX_MSG_SIZE = 512;
-
-
-typedef struct {
-  char const * file;
-  char const * func;
-  int line;
-} stack_buff_t;
-
-
 typedef int err_t;
+enum { OK = 0 };
 
 
-enum {
-  OK = 0
-};
+/* Get the string error corresponding to the numeric value of `err`. */
+char const * thread_strerror(int err);
 
 
-typedef struct {
-  stack_buff_t buffer[MAX_STACK_SIZE];
-} error_stack_t;
-
-
-typedef struct {
-  char buff[MAX_MSG_SIZE];
-} msg_data_t;
-
-
-char const * thread_strerror(int errnum);
-
-
-// Start an error trace.
+/* Start an error traceback. */
 void start_error(char const * file, char const * func, int line);
 
-// Set an error message.
+
+/* Save the initial error message. */
 void set_error_msg(char const * fmt, ...);
 
+
+/* Return the saved error message. */
+char const * get_error_msg(void);
+
+
 #ifdef __cplusplus
-// Overload `set_error_msg` to allow empty __VA_ARGS__ in macros
-// in C++.
+/* Overload `set_error_msg` to allow empty __VA_ARGS__ in macros */
+/* in C++. */
 inline void set_error_msg(void) {}
 #endif 
 
 
-// Clear the error trace.
+/* Clear the error traceback. */
 void clear_error(void);
 
-// Add a trace point to the error traceback.
+
+/* Add a trace point to the error traceback. */
 void add_error_trace(char const * file, char const * func, int line);
 
-// Get the error traceback in the out parameter. Returns the traceback length.
-int get_error_trace(stack_buff_t** out);
 
-char const * get_error_msg(void);
+/* Save the current stack position in a temporary variable. */
 void save_traceback_position(void);
+
+
+/* Restore the stack position from the temprary variable. */
 void restore_traceback_position(void);
 
 
+/* Format the traceback and print it to stderr. */
 void log_traceback(err_t err);
+
+
+/* Same as `log_traceback`, but also clears the error afterwards. */
 void log_and_clear_error(err_t err);
+
+
+/* Same as `log_and_clear_error`, but only if `err` != OK. */
 void log_and_clear_on_error(err_t err);
 
 
