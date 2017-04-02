@@ -1,8 +1,11 @@
 #include "tracy.h"
 
 #include <stdio.h>
-#include <string.h>
 #include <stdarg.h>
+#include <string.h>
+
+
+__TRACY_NAMESPACE_BEGIN
 
 
 enum { 
@@ -39,17 +42,23 @@ static __thread msg_data_t msg_buf;
 
 
 /* Get the string error corresponding to the numeric value of `err`. */
-char const * thread_strerror(int err) {
+static char const * get_error_string(int err);
+
+
+/* Get the string error corresponding to the numeric value of `err`. */
+static char const * get_error_string(int err) {
   static __thread char errbuf[MAX_ERR_STR_BUF_SIZE + 1];
 
-#if (_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE
-  if (strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE) != OK) {
+  #if ((_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE)
+  if (strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE) != 0) {
+    fprintf(stderr, "Error: strerror_r returned errno %d\n", errno);
     return NULL;
   }
   return errbuf;
 #else
-  return (char*)strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE);
+  return strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE);
 #endif
+
 }
 
 
@@ -65,12 +74,6 @@ void set_error_msg(char const * fmt, ...) {
   va_start(args, fmt);
   vsnprintf(msg_buf.buff, MAX_USER_ERR_MSG_SIZE, fmt, args);
   va_end(args);
-}
-
-
-/* Return the saved error message. */
-char const * get_error_msg(void) {
-  return msg_buf.buff;
 }
 
 
@@ -118,7 +121,7 @@ void log_traceback(err_t err) {
         local_stack.buffer[i].func);
   }
   
-  fprintf(stderr, "Error: %s (%d)\n", thread_strerror(err), err);
+  fprintf(stderr, "Error: %s (%d)\n", get_error_string(err), err);
 
   if (msg_buf.buff[0] != '\0') {
     fprintf(stderr, "Error message: %s\n", msg_buf.buff);
@@ -139,3 +142,6 @@ void log_and_clear_on_error(err_t err) {
     log_and_clear_error(err);
   }
 }
+
+
+__TRACY_NAMESPACE_END
