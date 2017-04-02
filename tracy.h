@@ -108,10 +108,10 @@ inline void __set_error_msg(void) {}
 
 
 /* If `ptr` == NULL, start error with `errno`. */
-#define START_ERROR_ON_NULL(ptr) do { \
+#define START_ERROR_ON_NULL(ptr, ...) do { \
   if ((ptr) == NULL) { \
     int const __seon_errno = errno; \
-    START_ERROR(__seon_errno); \
+    START_ERROR(__seon_errno, ##__VA_ARGS__); \
   } \
 } while (0)
 
