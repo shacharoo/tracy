@@ -37,7 +37,7 @@ Nice and clean.
 Tracy has a lot of useful error macros to offer. Read all about them below!
 
 ### Program Structure
-If a function can return an errror that should be handled in its calling scope, its return 
+If a function can return an error that should be handled in its calling scope, its return 
 value should be `err_t`, which is defined in `tracy.h`. 
 
 If the function finished successfuly, it should `return OK;`. 
