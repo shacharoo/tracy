@@ -1,12 +1,9 @@
-all: c cpp
+all: main
 
-c: tracy.h tracy.c main.c
-	gcc main.c tracy.c -o c -W -Wall -Werror
-
-cpp: tracy.h tracy.c main.c
-	g++ main.c tracy.c -o cpp -W -Wall -Werror
+main: tracy.h tracy.c main.c
+	$(CC) main.c tracy.c -o main -W -Wall -Werror
 
 clean:
-	rm -f c cpp *.o
+	rm -f main *.o
 
 .PHONY: clean all

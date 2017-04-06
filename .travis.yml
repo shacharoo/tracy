@@ -1,0 +1,10 @@
+language: c
+compiler: 
+ - gcc
+ - g++
+ - clang
+ - clang++
+os:
+ - linux
+before_script: cd src
+script: make main
