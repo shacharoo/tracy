@@ -3,7 +3,6 @@ compiler:
  - gcc
  - g++
  - clang
- - clang++
 os:
  - linux
 before_script: cd src

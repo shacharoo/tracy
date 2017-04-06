@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/farmersez/tracy.svg?branch=master)](https://travis-ci.org/farmersez/tracy)
+
 # tracy
 Tracy is a thread-safe C/C++ stack trace and error propagation utility that makes 
 exception-less code beautiful.
