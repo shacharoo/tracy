@@ -21,7 +21,7 @@ err_t func3(void) {
 err_t main(void) {
     err_t ret = func3();
     if (ret != OK) {
-        log_traceback(ret);
+        __TRACY_SCOPE log_traceback(ret);
     }
     
     return OK;

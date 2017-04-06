@@ -1,5 +1,3 @@
-tracy.o: tracy.h tracy.c
-	gcc -c tracy.c -o tracy.o -W -Wall -Werror
 
 main: main.c tracy.o
 	gcc main.c tracy.o -o main -W -Wall -Werror
@@ -7,6 +5,6 @@ main: main.c tracy.o
 all: main
 
 clean:
-	rm -f main *.o
+	rm -f c cpp *.o
 
 .PHONY: clean all
