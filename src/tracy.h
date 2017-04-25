@@ -1,26 +1,17 @@
-#ifndef __TRACY_H__
-#define __TRACY_H__
+#ifndef TRACY_H
+#define TRACY_H
 
 
 #include <errno.h>
 
 
-typedef int err_t;
-enum { OK = 0 };
-
-
 #ifdef __cplusplus
-#define __TRACY_NAMESPACE_BEGIN namespace tracy {
-#define __TRACY_NAMESPACE_END }
-#define __TRACY_SCOPE tracy::
-#else
-#define __TRACY_NAMESPACE_BEGIN
-#define __TRACY_NAMESPACE_END
-#define __TRACY_SCOPE 
+extern "C" {
 #endif
 
 
-__TRACY_NAMESPACE_BEGIN
+typedef int err_t;
+enum { OK = 0 };
 
 
 /* --------------------------- Public Functions --------------------------- */
@@ -76,8 +67,8 @@ inline void __set_error_msg(void) {}
 /* Start an error traceback and return the error number. */
 /* If an error message is given, sets the error message to the traceback. */
 #define START_ERROR(err, ...) do { \
-  __TRACY_SCOPE __start_error(__FILE__, __FUNCTION__, __LINE__); \
-  __TRACY_SCOPE __set_error_msg(__VA_ARGS__); \
+  __start_error(__FILE__, __FUNCTION__, __LINE__); \
+  __set_error_msg(__VA_ARGS__); \
   return (err); \
 } while (0);
 
@@ -121,7 +112,7 @@ inline void __set_error_msg(void) {}
 
 /* Add current position to traceback and return `err`. */
 #define RETURN_ERROR(err) do { \
-  __TRACY_SCOPE __add_error_trace(__FILE__, __FUNCTION__, __LINE__); \
+  __add_error_trace(__FILE__, __FUNCTION__, __LINE__); \
   return (err); \
 } while (0)
 
@@ -151,7 +142,9 @@ inline void __set_error_msg(void) {}
 } while (0)
 
 
-__TRACY_NAMESPACE_END
+#ifdef __cplusplus
+}  /* Close the `extern c` section. */
+#endif
 
 
-#endif  /* __TRACY_H__ */
+#endif  /* TRACY_H */

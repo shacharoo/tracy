@@ -1,7 +1,6 @@
 language: c
 compiler: 
- - gcc
- - g++
+ - cc
  - clang
 os:
  - linux

@@ -5,9 +5,6 @@
 #include <string.h>
 
 
-__TRACY_NAMESPACE_BEGIN
-
-
 enum { 
   MAX_STACK_SIZE = 1024,
   MAX_USER_ERR_MSG_SIZE = 512,
@@ -150,6 +147,3 @@ static char const * get_error_string(int err) {
   return strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE);
 #endif
 }
-
-
-__TRACY_NAMESPACE_END
