@@ -111,9 +111,14 @@ void trc_private_start_error(char const * file, char const * func, int line) {
 
 
 /* Add a trace point to the error traceback. */
-void trc_private_add_error_trace(char const * file, char const * func, int line) {
+void trc_private_add_error_trace(
+    char const * file,
+    char const * func,
+    int line) {
   if (stack_ptr >= MAX_STACK_SIZE) {
-    fprintf(stderr, "Warning: error stack overflow (no room for stack trace)\n");
+    fprintf(
+      stderr,
+      "Warning: error stack overflow (no room for stack trace)\n");
     return;
   }
 

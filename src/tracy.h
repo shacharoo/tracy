@@ -49,7 +49,10 @@ void trc_private_start_error(char const * file, char const * func, int line);
 
 
 /* Add a trace point to the error traceback. */
-void trc_private_add_error_trace(char const * file, char const * func, int line);
+void trc_private_add_error_trace(
+  char const * file,
+  char const * func,
+  int line);
 
 
 /* Save the initial error message. */
@@ -94,7 +97,10 @@ inline void trc_private_set_error_msg(void) {}
 #define TRC_START_ERROR_ON_ERRNO(res, ...) do { \
   TRC_err const trc_private_seoe_retval = (res); \
   TRC_err const trc_private_seoe_errno = errno; \
-  TRC_START_ERROR_IF(trc_private_seoe_retval < 0, trc_private_seoe_errno, ##__VA_ARGS__); \
+  TRC_START_ERROR_IF( \
+    trc_private_seoe_retval < 0, \
+    trc_private_seoe_errno, \
+    ##__VA_ARGS__); \
 } while (0)
 
 
@@ -128,7 +134,9 @@ inline void trc_private_set_error_msg(void) {}
 /* Like `TRC_RETURN_ERROR`, but only if `err` != TRC_OK. */
 #define TRC_RETURN_ON_ERROR(err) do { \
   TRC_err const trc_private_ror_local_err = (err); \
-  TRC_RETURN_ERROR_IF(trc_private_ror_local_err != TRC_OK, trc_private_ror_local_err); \
+  TRC_RETURN_ERROR_IF( \
+    trc_private_ror_local_err != TRC_OK, \
+    trc_private_ror_local_err); \
 } while (0)
 
 
