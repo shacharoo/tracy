@@ -17,19 +17,19 @@ typedef struct {
   char const * file;
   char const * func;
   int line;
-} stack_buff_t;
+} stack_buff;
 
 
 /* The trace stack. */
 typedef struct {
-  stack_buff_t buffer[MAX_STACK_SIZE];
-} error_stack_t;
+  stack_buff buffer[MAX_STACK_SIZE];
+} error_stack;
 
 
 /* The initial error message. */
 typedef struct {
   char buff[MAX_USER_ERR_MSG_SIZE + 1];
-} msg_data_t;
+} msg_data;
 
 
 /* ----------------------------- Static Data ------------------------------ */
@@ -39,36 +39,36 @@ typedef struct {
 static char const * get_error_string(int err);
 
 
-static __thread error_stack_t local_stack;
+static __thread error_stack local_stack;
 static __thread int stack_ptr = 0;
 static __thread int stack_ptr_save = 0;
-static __thread msg_data_t msg_buf;
+static __thread msg_data msg_buf;
 
 
 /* --------------------------- Public Functions --------------------------- */
 
 
 /* Clear the error traceback. */
-void clear_error(void) {
+void TRC_clear_error(void) {
   stack_ptr = 0;
   msg_buf.buff[0] = '\0';
 }
 
 
 /* Save the current stack position in a temporary variable. */
-void save_traceback_position(void) {
+void TRC_save_traceback_position(void) {
   stack_ptr_save = stack_ptr;
 }
 
 
 /* Restore the stack position from the temprary variable. */
-void restore_traceback_position(void) {
+void TRC_restore_traceback_position(void) {
   stack_ptr = stack_ptr_save;
 }
 
 
 /* Format the traceback and print it to stderr. */
-void log_traceback(err_t err) {
+void TRC_log_traceback(TRC_err err) {
   int i;
   fprintf(stderr, "CC Traceback:\n");
   for (i = stack_ptr - 1; i >= 0; --i) {
@@ -86,17 +86,17 @@ void log_traceback(err_t err) {
 }
 
 
-/* Same as `log_traceback`, but also clears the error afterwards. */
-void log_and_clear_error(err_t err) {
-  log_traceback(err);
-  clear_error();
+/* Same as `TRC_log_traceback`, but also clears the error afterwards. */
+void TRC_log_and_clear_error(TRC_err err) {
+  TRC_log_traceback(err);
+  TRC_clear_error();
 }
 
 
-/* Same as `log_and_clear_error`, but only if `err` != OK. */
-void log_and_clear_on_error(err_t err) {
-  if (err != OK) {
-    log_and_clear_error(err);
+/* Same as `TRC_log_and_clear_error`, but only if `err` != TRC_OK. */
+void TRC_log_and_clear_on_error(TRC_err err) {
+  if (err != TRC_OK) {
+    TRC_log_and_clear_error(err);
   }
 }
 
@@ -105,13 +105,13 @@ void log_and_clear_on_error(err_t err) {
 
 
 /* Start an error traceback. */
-void __start_error(char const * file, char const * func, int line) {
-  __add_error_trace(file, func, line);
+void trc_private_start_error(char const * file, char const * func, int line) {
+  trc_private_add_error_trace(file, func, line);
 }
 
 
 /* Add a trace point to the error traceback. */
-void __add_error_trace(char const * file, char const * func, int line) {
+void trc_private_add_error_trace(char const * file, char const * func, int line) {
   if (stack_ptr >= MAX_STACK_SIZE) {
     fprintf(stderr, "Warning: error stack overflow (no room for stack trace)\n");
     return;
@@ -125,7 +125,7 @@ void __add_error_trace(char const * file, char const * func, int line) {
 
 
 /* Save the initial error message. */
-void __set_error_msg(char const * fmt, ...) {
+void trc_private_set_error_msg(char const * fmt, ...) {
   va_list args;
   va_start(args, fmt);
   vsnprintf(msg_buf.buff, MAX_USER_ERR_MSG_SIZE, fmt, args);

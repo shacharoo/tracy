@@ -31,3 +31,11 @@
 # Debug files
 *.dSYM/
 *.su
+
+# Visual studio files
+*.sln
+*.VC.db
+*.VC.VC.opendb
+*.vcxproj
+*.vcxproj.filters
+*.suo

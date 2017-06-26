@@ -1,28 +1,28 @@
 #include "tracy.h"
 #include <stdio.h>
 
-err_t func1(void) {
-    START_ERROR(ENOMEM, "SORRY!!");
-    return OK;
+TRC_err func1(void) {
+  TRC_START_ERROR(ENOMEM, "SORRY!!");
+  return TRC_OK;
 }
 
-err_t func2(void) {
-    RETURN_ON_ERROR(func1());
-    printf("should not be printed\n");
-    return OK;
+TRC_err func2(void) {
+  TRC_RETURN_ON_ERROR(func1());
+  printf("should not be printed\n");
+  return TRC_OK;
 }
 
-err_t func3(void) {
-    RETURN_ON_ERROR(func2());
-    printf("should not be printed\n");
-    return OK;
+TRC_err func3(void) {
+  TRC_RETURN_ON_ERROR(func2());
+  printf("should not be printed\n");
+  return TRC_OK;
 }
 
-err_t main(void) {
-    err_t ret = func3();
-    if (ret != OK) {
-        log_traceback(ret);
-    }
-    
-    return OK;
+TRC_err main(void) {
+  TRC_err ret = func3();
+  if (ret != TRC_OK) {
+    TRC_log_traceback(ret);
+  }
+
+  return TRC_OK;
 }
