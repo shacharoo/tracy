@@ -44,7 +44,7 @@ void TRC_log_and_clear_on_error(TRC_err err);
 
 typedef void (*TRC_err_print_callback)(char const * fmt, va_list vargs);
 
-
+/* Register an output handler for Tracy's outputs */
 void TRC_register_err_print_callback(TRC_err_print_callback callback);
 
 
