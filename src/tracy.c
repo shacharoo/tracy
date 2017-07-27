@@ -45,6 +45,11 @@ static __thread int stack_ptr_save = 0;
 static __thread msg_data msg_buf;
 
 
+/* Callback function for log printing. */
+static __thread TRC_err_print_callback print_callback =
+    trc_private_default_print_callback;
+
+
 /* --------------------------- Public Functions --------------------------- */
 
 
@@ -70,18 +75,18 @@ void TRC_restore_traceback_position(void) {
 /* Format the traceback and print it to stderr. */
 void TRC_log_traceback(TRC_err err) {
   int i;
-  fprintf(stderr, "CC Traceback:\n");
+  trc_private_print("CC Traceback:\n");
   for (i = stack_ptr - 1; i >= 0; --i) {
-    fprintf(stderr, "  File \"%s\", line %d, in %s\n", 
+    trc_private_print("  File \"%s\", line %d, in %s\n",
         local_stack.buffer[i].file,
         local_stack.buffer[i].line,
         local_stack.buffer[i].func);
   }
   
-  fprintf(stderr, "Error: %s (%d)\n", get_error_string(err), err);
+  trc_private_print("Error: %s (%d)\n", get_error_string(err), err);
 
   if (msg_buf.buff[0] != '\0') {
-    fprintf(stderr, "Error message: %s\n", msg_buf.buff);
+    trc_private_print("Error message: %s\n", msg_buf.buff);
   }
 }
 
@@ -98,6 +103,15 @@ void TRC_log_and_clear_on_error(TRC_err err) {
   if (err != TRC_OK) {
     TRC_log_and_clear_error(err);
   }
+}
+
+
+void TRC_register_err_print_callback(TRC_err_print_callback callback) {
+  if (callback == NULL) {
+    callback = trc_private_default_print_callback;
+  }
+
+  print_callback = callback;
 }
 
 
@@ -152,3 +166,17 @@ static char const * get_error_string(int err) {
   return strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE);
 #endif
 }
+
+
+void trc_private_print(char const * fmt, ...) {
+  va_list args;
+  va_start(args, fmt);
+  print_callback(fmt, args);
+  va_end(args);
+}
+
+
+void trc_private_default_print_callback(char const * fmt, va_list args) {
+  vfprintf(stderr, fmt, args);
+}
+
