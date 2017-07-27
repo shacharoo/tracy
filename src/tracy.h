@@ -59,6 +59,11 @@ void trc_private_print(char const * fmt, ...);
 inline void trc_private_print(void) {}
 #endif
 
+
+/* Default callback function for printing. Print the given format to stderr */
+void trc_private_default_print_callback(char const * fmt, va_list args);
+
+
 /* Start an error traceback. */
 void trc_private_start_error(char const * file, char const * func, int line);
 

@@ -46,7 +46,8 @@ static __thread msg_data msg_buf;
 
 
 /* Callback function for log printing. */
-static __thread TRC_err_print_callback print_callback = NULL;
+static __thread TRC_err_print_callback print_callback =
+    trc_private_default_print_callback;
 
 
 /* --------------------------- Public Functions --------------------------- */
@@ -106,7 +107,11 @@ void TRC_log_and_clear_on_error(TRC_err err) {
 
 
 void TRC_register_err_print_callback(TRC_err_print_callback callback) {
-	print_callback = callback;
+  if (callback == NULL) {
+    callback = trc_private_default_print_callback;
+  }
+
+  print_callback = callback;
 }
 
 
@@ -162,14 +167,16 @@ static char const * get_error_string(int err) {
 #endif
 }
 
+
 void trc_private_print(char const * fmt, ...) {
   va_list args;
   va_start(args, fmt);
-  if (print_callback) {
-    print_callback(fmt, args);
-  } else {
-    vfprintf(stderr, fmt, args);
-  }
+  print_callback(fmt, args);
   va_end(args);
+}
+
+
+void trc_private_default_print_callback(char const * fmt, va_list args) {
+  vfprintf(stderr, fmt, args);
 }
 
