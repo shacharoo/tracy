@@ -159,4 +159,6 @@ typedef void (*TRC_err_print_callback)(char const * fmt, va_list vargs);
 void TRC_register_err_print_callback(TRC_err_print_callback callback);
 ```
 
+Sending NULL to this function will re-register the default tracy
+
 
