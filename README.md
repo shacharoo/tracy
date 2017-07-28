@@ -150,7 +150,7 @@ TRC_CLEANUP_RETURN_ON_ERROR(err, cleanup)
 #### Error Handling and Cleanup
 
 The default handler for errors will print the error to `stderr`. Tracy allows
-registering of different output handlers using:
+registering of different log handlers using:
 
 ```c
 typedef void (*TRC_err_print_callback)(char const * fmt, va_list vargs);
@@ -159,6 +159,6 @@ typedef void (*TRC_err_print_callback)(char const * fmt, va_list vargs);
 void TRC_register_err_print_callback(TRC_err_print_callback callback);
 ```
 
-Sending NULL to this function will re-register the default tracy
+Sending NULL to this function will re-register the default tracy log handler.
 
 
