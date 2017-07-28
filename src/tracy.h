@@ -3,6 +3,7 @@
 
 
 #include <errno.h>
+#include <stdarg.h>
 
 
 #ifdef __cplusplus
@@ -41,7 +42,26 @@ void TRC_log_and_clear_error(TRC_err err);
 void TRC_log_and_clear_on_error(TRC_err err);
 
 
+typedef void (*TRC_err_print_callback)(char const * fmt, va_list vargs);
+
+/* Register an output handler for Tracy's outputs */
+void TRC_register_err_print_callback(TRC_err_print_callback callback);
+
+
 /* -------------------------- Private Functions --------------------------- */
+
+
+/* Negotiator function for the listed print callback */
+void trc_private_print(char const * fmt, ...);
+#ifdef __cplusplus
+/* Overload `trc_private_print` to allow empty __VA_ARGS__ in macros */
+/* in C++. */
+inline void trc_private_print(void) {}
+#endif
+
+
+/* Default callback function for printing. Print the given format to stderr */
+void trc_private_default_print_callback(char const * fmt, va_list args);
 
 
 /* Start an error traceback. */
