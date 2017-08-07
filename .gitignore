@@ -5,7 +5,7 @@
 *.elf
 
 # make result file
-src/main
+tests/main
 
 # Precompiled Headers
 *.gch
