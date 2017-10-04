@@ -42,6 +42,11 @@ tests/main
 *.vcxproj
 *.vcxproj.filters
 *.suo
+/.vs
+/Debug/
+/Release/
+
 
 # eclipse files
 /.project
+
