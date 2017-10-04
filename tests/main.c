@@ -8,7 +8,7 @@ char const * KNRM = "\x1B[0m";
 char const * KRED = "\x1B[31m";
 
 
-void print_err_in_red(char const * fmt, va_list argp) {
+void log_err_in_red(char const * fmt, va_list argp) {
 
 	char colored_string[1000] = { '\0' };
 
@@ -42,7 +42,7 @@ TRC_err func3(void) {
 
 TRC_err main(void) {
 
-  TRC_register_err_print_callback(print_err_in_red);
+  TRC_register_err_log_callback(log_err_in_red);
 
   TRC_err ret = func3();
   if (ret != TRC_OK) {
@@ -51,3 +51,4 @@ TRC_err main(void) {
 
   return TRC_OK;
 }
+
