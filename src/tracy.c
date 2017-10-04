@@ -5,7 +5,7 @@
 #include <string.h>
 
 
-#if defined(MSWINDOWS)
+#if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #include <winbase.h>
 #define TRC_str_error(errno, buffer, size) strerror_s((buffer), (size), (errno))
