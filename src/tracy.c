@@ -1,9 +1,9 @@
+#define __STDC_WANT_LIB_EXT1__ 1
+
 #include "tracy.h"
 
 #include <stdio.h>
 #include <stdarg.h>
-
-#define __STDC_WANT_LIB_EXT1__ 1
 #include <string.h>
 
 
@@ -13,6 +13,9 @@
 #define TRC_str_error(errno, buffer, size) strerror_r((errno), (buffer), (size))
 #endif
 
+#ifndef __STDC_LIB_EXT1__
+#error "shiiiiit"
+#endif
 
 enum { 
   MAX_STACK_SIZE = 1024,
