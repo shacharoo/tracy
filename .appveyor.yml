@@ -2,9 +2,7 @@ environment:
   CC: "gcc"
   
 before_build:
-  - dir C:\msys64
-  - dir C:\MinGW\bin
-  - dir C:\MinGW\msys\1.0\bin
+  - dir C:\msys64\mingw32
   - cd tests
 
 build: off
