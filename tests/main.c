@@ -8,15 +8,15 @@ char const * KNRM = "\x1B[0m";
 char const * KRED = "\x1B[31m";
 
 
-void print_err_in_red(char const * fmt, va_list argp) {
+void log_err_in_red(char const * fmt, va_list argp) {
 
-	char colored_string[1000] = { '\0' };
+  char colored_string[1000] = { '\0' };
 
-	strcat(colored_string, KRED);
-	strcat(colored_string, fmt);
-	strcat(colored_string, KNRM);
+  strcat(colored_string, KRED);
+  strcat(colored_string, fmt);
+  strcat(colored_string, KNRM);
 
-	vfprintf(stderr, colored_string, argp);
+  vfprintf(stderr, colored_string, argp);
 }
 
 
@@ -42,7 +42,7 @@ TRC_err func3(void) {
 
 TRC_err main(void) {
 
-  TRC_register_err_print_callback(print_err_in_red);
+  TRC_register_err_log_callback(log_err_in_red);
 
   TRC_err ret = func3();
   if (ret != TRC_OK) {
