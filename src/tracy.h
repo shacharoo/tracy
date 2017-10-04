@@ -30,7 +30,7 @@ void TRC_save_traceback_position(void);
 void TRC_restore_traceback_position(void);
 
 
-/* Format the traceback and print it to stderr. */
+/* Format the traceback and log it to stderr. */
 void TRC_log_traceback(TRC_err err);
 
 
@@ -42,26 +42,26 @@ void TRC_log_and_clear_error(TRC_err err);
 void TRC_log_and_clear_on_error(TRC_err err);
 
 
-typedef void (*TRC_err_print_callback)(char const * fmt, va_list vargs);
+typedef void (*TRC_err_log_callback)(char const * fmt, va_list vargs);
 
 /* Register an output handler for Tracy's outputs */
-void TRC_register_err_print_callback(TRC_err_print_callback callback);
+void TRC_register_err_log_callback(TRC_err_log_callback callback);
 
 
 /* -------------------------- Private Functions --------------------------- */
 
 
-/* Negotiator function for the listed print callback */
-void trc_private_print(char const * fmt, ...);
+/* Negotiator function for the listed log callback */
+void trc_private_log(char const * fmt, ...);
 #ifdef __cplusplus
-/* Overload `trc_private_print` to allow empty __VA_ARGS__ in macros */
+/* Overload `trc_private_log` to allow empty __VA_ARGS__ in macros */
 /* in C++. */
-inline void trc_private_print(void) {}
+inline void trc_private_log(void) {}
 #endif
 
 
-/* Default callback function for printing. Print the given format to stderr */
-void trc_private_default_print_callback(char const * fmt, va_list args);
+/* Default callback function for printing. Log the given format to stderr */
+void trc_private_default_log_callback(char const * fmt, va_list args);
 
 
 /* Start an error traceback. */
