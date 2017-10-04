@@ -5,6 +5,9 @@
 #include <string.h>
 
 
+#define _GNU_SOURCE
+
+
 #ifdef __linux__
 #define TRC_str_error(errno, buffer, size) strerror_r((errno), (buffer), (size))
 #else
