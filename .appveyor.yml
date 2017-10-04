@@ -4,8 +4,8 @@ before_build:
 build: off
 
 build_script:
-  - dir C:\MinGW\
-  - mingw32-make.exe main
+  - dir C:\MinGW\msys\1.0\bin\
+  - C:\MinGW\msys\1.0\bin\make.exe main
 
 test_script:
   - main.exe
