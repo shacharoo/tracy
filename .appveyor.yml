@@ -7,8 +7,8 @@ before_build:
 build: off
 
 build_script:
-  - dir C:\MinGW\msys\1.0\bin\
-  - C:\MinGW\msys\1.0\bin\make.exe main
+  - SET PATH=C:\MinGW\bin;C:\MinGW\msys\1.0\bin;%PATH%
+  - make.exe main
 
 test_script:
   - main.exe
