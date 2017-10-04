@@ -1,15 +1,16 @@
+os: Visual Studio 2015
+
 environment:
   CC: "gcc"
   
 before_build:
-  - dir C:\msys64\mingw32\bin
   - cd tests
 
 build: off
 
 build_script:
   - SET PATH=C:\MinGW\bin;C:\MinGW\msys\1.0\bin;%PATH%
-  - make.exe main
+  - mingw32-make
 
 test_script:
   - main.exe
