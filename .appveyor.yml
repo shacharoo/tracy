@@ -4,7 +4,7 @@ before_build:
 build: off
 
 build_script:
-  - make main
+  - mingw32-make.exe main
 
 test_script:
   - main.exe
