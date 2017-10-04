@@ -5,6 +5,13 @@
 #include <string.h>
 
 
+#ifdef __linux__
+#define TRC_str_error(errno, buffer, size) strerror_r((errno), (buffer), (size))
+#else
+#define TRC_str_error(errno, buffer, size) strerror_s((buffer), (size), (errno))
+#endif
+
+
 enum { 
   MAX_STACK_SIZE = 1024,
   MAX_USER_ERR_MSG_SIZE = 512,
@@ -156,14 +163,15 @@ void trc_private_set_error_msg(char const * fmt, ...) {
 static char const * get_error_string(int err) {
   static __thread char errbuf[MAX_ERR_STR_BUF_SIZE + 1];
 
-  #if ((_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE)
-  if (strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE) != 0) {
-    fprintf(stderr, "Error: strerror_r returned errno %d\n", errno);
+  #if (!defined(__linux__) || \
+       ((_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE))
+  if (TRC_str_error(err, errbuf, MAX_ERR_STR_BUF_SIZE) != 0) {
+    fprintf(stderr, "Error: TRC_str_error returned errno %d\n", errno);
     return NULL;
   }
   return errbuf;
 #else
-  return strerror_r(err, errbuf, MAX_ERR_STR_BUF_SIZE);
+  return TRC_str_error(err, errbuf, MAX_ERR_STR_BUF_SIZE);
 #endif
 }
 
