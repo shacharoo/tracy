@@ -4,6 +4,7 @@ before_build:
 build: off
 
 build_script:
+  - dir C:\
   - mingw32-make.exe main
 
 test_script:
