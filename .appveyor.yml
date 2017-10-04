@@ -1,0 +1,10 @@
+before_build:
+  - cd tests
+
+build: off
+
+build_script:
+  - make main
+
+test_script:
+  - main.exe
