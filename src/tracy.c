@@ -5,13 +5,10 @@
 #include <string.h>
 
 
-#define _GNU_SOURCE
-
-
-#ifdef __linux__
-#define TRC_str_error(errno, buffer, size) strerror_r((errno), (buffer), (size))
-#else
+#ifdef _WIN32
 #define TRC_str_error(errno, buffer, size) strerror_s((buffer), (size), (errno))
+#else
+#define TRC_str_error(errno, buffer, size) strerror_r((errno), (buffer), (size))
 #endif
 
 
@@ -166,7 +163,7 @@ void trc_private_set_error_msg(char const * fmt, ...) {
 static char const * get_error_string(int err) {
   static __thread char errbuf[MAX_ERR_STR_BUF_SIZE + 1];
 
-  #if (!defined(__linux__) || \
+  #if (defined(_WIN32) || \
        ((_POSIX_C_SOURCE >= 200112L || _XOPEN_SOURCE >= 600) && ! _GNU_SOURCE))
   if (TRC_str_error(err, errbuf, MAX_ERR_STR_BUF_SIZE) != 0) {
     fprintf(stderr, "Error: TRC_str_error returned errno %d\n", errno);
