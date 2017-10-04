@@ -7,11 +7,11 @@
 #include <string.h>
 
 
-/*#if defined(_WIN32) || defined(_WIN64)
+#if defined(_WIN32) || defined(_WIN64)
 #define TRC_str_error(errno, buffer, size) strerror_s((buffer), (size), (errno))
-#else*/
+#else
 #define TRC_str_error(errno, buffer, size) strerror_r((errno), (buffer), (size))
-
+#endif
 
 
 enum { 
