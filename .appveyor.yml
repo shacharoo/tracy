@@ -1,5 +1,5 @@
 environment:
-  - CC "gcc"
+  - CC: "gcc"
   
 before_build:
   - cd tests
