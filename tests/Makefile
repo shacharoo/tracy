@@ -1,3 +1,5 @@
+CC ?= gcc
+
 all: main
 
 main: ../src/tracy.h ../src/tracy.c main.c
