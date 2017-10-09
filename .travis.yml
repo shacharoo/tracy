@@ -4,5 +4,5 @@ compiler:
  - clang
 os:
  - linux
-before_script: cd src
+before_script: cd tests
 script: make main

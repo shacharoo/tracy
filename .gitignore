@@ -4,6 +4,9 @@
 *.obj
 *.elf
 
+# make result file
+tests/main
+
 # Precompiled Headers
 *.gch
 *.pch
@@ -39,3 +42,6 @@
 *.vcxproj
 *.vcxproj.filters
 *.suo
+
+# eclipse files
+/.project
