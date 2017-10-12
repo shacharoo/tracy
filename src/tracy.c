@@ -5,25 +5,10 @@
 #include <string.h>
 
 
-enum { 
-  MAX_STACK_SIZE = 1024,
+enum {
   MAX_USER_ERR_MSG_SIZE = 512,
   MAX_ERR_STR_BUF_SIZE = 1024
 };
-
-
-/* Holds a single trace point in the trace stack. */
-typedef struct {
-  char const * file;
-  char const * func;
-  int line;
-} stack_buff;
-
-
-/* The trace stack. */
-typedef struct {
-  stack_buff buffer[MAX_STACK_SIZE];
-} error_stack;
 
 
 /* The initial error message. */
@@ -39,7 +24,8 @@ typedef struct {
 static char const * get_error_string(int err);
 
 
-static __thread error_stack local_stack;
+extern int TRC_trace_stack_size;
+extern __thread trc_private_stack_buff TRC_trace_stack[];
 static __thread int stack_ptr = 0;
 static __thread int stack_ptr_save = 0;
 static __thread msg_data msg_buf;
@@ -78,9 +64,9 @@ void TRC_log_traceback(TRC_err err) {
   trc_private_log("CC Traceback:\n");
   for (i = stack_ptr - 1; i >= 0; --i) {
     trc_private_log("  File \"%s\", line %d, in %s\n",
-        local_stack.buffer[i].file,
-        local_stack.buffer[i].line,
-        local_stack.buffer[i].func);
+        TRC_trace_stack[i].file,
+        TRC_trace_stack[i].line,
+        TRC_trace_stack[i].func);
   }
   
   trc_private_log("Error: %s (%d)\n", get_error_string(err), err);
@@ -129,16 +115,16 @@ void trc_private_add_error_trace(
     char const * file,
     char const * func,
     int line) {
-  if (stack_ptr >= MAX_STACK_SIZE) {
+  if (stack_ptr >= TRC_trace_stack_size) {
     fprintf(
       stderr,
       "Warning: error stack overflow (no room for stack trace)\n");
     return;
   }
 
-  local_stack.buffer[stack_ptr].file = file;
-  local_stack.buffer[stack_ptr].func = func;
-  local_stack.buffer[stack_ptr].line = line;
+  TRC_trace_stack[stack_ptr].file = file;
+  TRC_trace_stack[stack_ptr].func = func;
+  TRC_trace_stack[stack_ptr].line = line;
   ++stack_ptr;
 }
 
