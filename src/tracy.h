@@ -181,7 +181,7 @@ typedef struct {
 } trc_private_stack_buff;
 
 
-/* Allocates the trace stack buffer in the global scope with given size.
+/* Allocate the trace stack buffer in the global scope with given size.
    The given size will determine the maximum lines logged in the traceback. */
 #define TRC_ALLOCATE_TRACE_STACK(max_traceback_lines) \
   int TRC_trace_stack_size = (max_traceback_lines); \
