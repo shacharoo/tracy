@@ -4,6 +4,9 @@
 #include <string.h>
 
 
+TRC_ALLOCATE_TRACE_STACK(1024)
+
+
 char const * KNRM = "\x1B[0m";
 char const * KRED = "\x1B[31m";
 

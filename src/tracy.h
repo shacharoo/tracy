@@ -170,6 +170,24 @@ inline void trc_private_set_error_msg(void) {}
 } while (0)
 
 
+/* --------------------------- Allocation Macros -------------------------- */
+
+
+/* Holds a single trace point in the trace stack. */
+typedef struct {
+  char const * file;
+  char const * func;
+  int line;
+} trc_private_stack_buff;
+
+
+/* Allocate the trace stack buffer in the global scope with given size.
+   The given size will determine the maximum lines logged in the traceback. */
+#define TRC_ALLOCATE_TRACE_STACK(max_traceback_lines) \
+  int TRC_trace_stack_size = (max_traceback_lines); \
+  __thread trc_private_stack_buff TRC_trace_stack[max_traceback_lines];
+
+
 #ifdef __cplusplus
 }  /* Close the `extern c` section. */
 #endif

@@ -9,6 +9,8 @@ exception-less code readable and beautiful.
 ```c
 #include <tracy.h>
 
+TRC_ALLOCATE_TRACE_STACK(1024)
+
 TRC_err inner_func(void) {
   TRC_START_ERROR(ENOMEM, "Could not allocate... anything!");
 }
@@ -37,6 +39,28 @@ Error message: Could not allocate... anything!
 Nice and clean.
 
 Tracy has a lot of useful error macros to offer. Read all about them below!
+
+### Allocating the trace stack
+
+The trace stack must be allocated using the `TRC_ALLOCATE_TRACE_STACK` macro.
+It must be placed in the global scope of one of the linked source files.
+The given size will determine the maximum lines logged in the traceback.
+
+```c
+/* Allocate the trace stack buffer in the global scope with given size.
+   The given size will determine the maximum lines logged in the traceback. */
+TRC_ALLOCATE_TRACE_STACK(max_traceback_lines)
+```
+
+Failing to do so will cause a linkage error that may look like this:
+
+```shell
+tracy.c: undefined reference to `TRC_trace_stack_size'
+tracy.c: undefined reference to `__emutls_v.TRC_trace_stack'
+```
+
+If you see a link error like this, you probably didn't use `TRC_ALLOCATE_TRACE_STACK`,
+or didn't link the file that uses it.
 
 ### Program Structure
 If a function can return an error that should be handled in its calling scope, its return 
@@ -160,5 +184,3 @@ void TRC_register_err_log_callback(TRC_err_log_callback callback);
 ```
 
 Sending NULL to this function will re-register the default tracy log handler.
-
-
