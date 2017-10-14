@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/FarmerSez/tracy.svg?branch=master)](https://travis-ci.org/FarmerSez/tracy)
+[![Build Status](https://travis-ci.org/shacharoo/tracy.svg?branch=master)](https://travis-ci.org/shacharoo/tracy)
 
 # tracy
 Tracy is a thread-safe stack trace and error propagation utility for C that makes 
